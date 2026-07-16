@@ -1,1 +1,12 @@
-
+ celebrities = [
+      "Elon Musk", 
+      "Sam A",
+      "Leonardo DiCaprio", 
+      "LeBron James", 
+      "Chris Rock", 
+      "Angelina Jolie", 
+      "Serena Williams", 
+      "Emma Watson", 
+      "Jennifer Lawrence", 
+      "Megan Fox"
+]

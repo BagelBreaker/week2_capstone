@@ -6,8 +6,8 @@ celebrities = [
     "Chris Rock",
     "Serena Williams",
     "Angelina Jolie",
-    "Malala Yousafzai",
-    "Zendaya",
+    "Emma Watson",
+    "Jennifer Lawrence",
     "Megan Fox"
 ]
 

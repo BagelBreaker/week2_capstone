@@ -1,4 +1,4 @@
- celebrities = [
+celebrities = [
       "Elon Musk", 
       "Sam A",
       "Leonardo DiCaprio", 

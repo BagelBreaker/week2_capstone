@@ -1,10 +1,19 @@
 .DS_Store
 **/.DS_Store
 
-*.pkl
 data/
+*.jpg
+*.jpeg
+*.png
+*.webp
+
+*.pkl
+face_vectors.pkl
+
+# Python junk
 __pycache__/
 *.pyc
+.ipynb_checkpoints/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

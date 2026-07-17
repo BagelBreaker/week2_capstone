@@ -17,7 +17,7 @@ feedback_history = []
 # Store new unknown
 new_profiles = []
 
-def collect_feedback(predicted_person, face_vector):
+def collect_feedback(predicted_person, descriptor_vector):
 
     print("--------------------------------")
     print("Facial Recognition")
@@ -34,7 +34,7 @@ def collect_feedback(predicted_person, face_vector):
 
         profile_update = {
             "person": predicted_person,
-            "vector_added": face_vector,
+            "vector_added": descriptor_vector,
             "confirmed": True
         }
 
@@ -61,7 +61,7 @@ def collect_feedback(predicted_person, face_vector):
         profile_update = {
             "incorrect_prediction": predicted_person,
             "actual_person": correct_person,
-            "vector_added": face_vector
+            "vector_added": descriptor_vector
         }
 
         feedback_history.append(profile_update)
@@ -82,7 +82,7 @@ def collect_feedback(predicted_person, face_vector):
 
         new_profile = {
             "name": new_name,
-            "vector": face_vector
+            "vector": descriptor_vector
         }
 
         new_profiles.append(new_profile)
@@ -97,5 +97,5 @@ def collect_feedback(predicted_person, face_vector):
 
 collect_feedback(
     predicted_name,
-    face_vector
+    descriptor_vector
 )

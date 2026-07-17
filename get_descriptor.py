@@ -2,7 +2,7 @@ from pathlib import Path
 
 import numpy as np
 from facenet_models import FacenetModel
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 
 model = FacenetModel()
 
@@ -13,9 +13,14 @@ def _load_img(path):
 
 
 def file_descriptors(file_path):
-    img = _load_img(file_path)
-    boxes, probs, landmarks = model.detect(img)
+    try:
+        img = _load_img(file_path)
+    except (UnidentifiedImageError, OSError) as e:
+        print("bad image skipped:", file_path)
+        print(" ", e)
+        return None
 
+    boxes, probs, landmarks = model.detect(img)
     if boxes is None or len(boxes) == 0:
         return None
 
@@ -28,7 +33,6 @@ def camera_descriptors():
 
     img = take_picture()
     boxes, probs, landmarks = model.detect(img)
-
     if boxes is None or len(boxes) == 0:
         return None
 

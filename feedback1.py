@@ -93,9 +93,9 @@ def collect_feedback(predicted_person, face_vector):
         )
 
     else:
-        print("Invalid image.")
+        print("Invalid.")
 
 collect_feedback(
     predicted_name,
-    example_vector
+    face_vector
 )

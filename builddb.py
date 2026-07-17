@@ -1,4 +1,7 @@
-from vector_db import VectorDatabase
+from pathlib import Path
+
+import numpy as np
+
 from get_descriptor import file_descriptors
 import os
 

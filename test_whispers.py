@@ -25,11 +25,10 @@ if testing_segment == 0:
 
 elif testing_segment == 1:
     db = VectorDatabase.load("db.pkl")
-    w = Whispers(db.vectors,db.names,threshold=0.4)
+    w = Whispers(db.vectors,db.names,threshold=0.35)
     w.create_matrix()
-    print(w.get_adj_mat())
     w.create_nodes()
-    # w.get_plot()
-    # w.train(convergence_threshold=50,stopping_threshold=10000)
+    w.get_plot()
     w.train_sweeps()
+    w.print_results()
     w.get_plot()

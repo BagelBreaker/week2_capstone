@@ -141,6 +141,14 @@ class Whispers:
     def train_sweeps(self, max_sweeps=1000):
         for sweep in range(max_sweeps):
             self.whispers_sweep()
+    
+    def print_results(self):
+        label_counts = Counter()
+        for node in self.nodes:
+            label_counts[node.get_label()] += 1
+        for label in label_counts.keys():
+            print("cluster: ", self.names[label])
+
         
             
 

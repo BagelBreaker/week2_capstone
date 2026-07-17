@@ -25,6 +25,9 @@ class Node:
     def get_label(self):
         return self.label
 
+    def get_truth(self):
+        return self.truth
+
 
 def cos_dist(a, b):
     a = np.asarray(a, dtype=np.float32).ravel()
@@ -146,8 +149,31 @@ class Whispers:
         label_counts = Counter()
         for node in self.nodes:
             label_counts[node.get_label()] += 1
+        print("total clusters: ", len(label_counts.keys()))
         for label in label_counts.keys():
             print("cluster: ", self.names[label])
+    
+    def sorted_images(self):
+        label_counts = Counter()
+        sorted = {}
+        for node in self.nodes:
+            label_counts[node.get_label()] += 1
+        for label in label_counts.keys():
+            sorted[self.nodes[label].get_truth()] = []
+        for node in self.nodes:
+            sorted[self.nodes[node.get_label()].get_truth()].append(node.get_truth())
+        return sorted
+    
+    def get_results(self):
+        label_counts = Counter()
+        for node in self.nodes:
+            label_counts[node.get_label()] += 1
+        return len(label_counts.keys())
+            
+
+    
+    
+
 
         
             

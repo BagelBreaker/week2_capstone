@@ -6,7 +6,7 @@ sys.path.append(str(Path(__file__).resolve().parents[1]))
 from get_descriptor import file_descriptors
 from vector_db import VectorDatabase
 
-TRAIN_DIR = Path("data/train")
+TRAIN_DIR = Path("../data/test")
 DB_PATH = "face_vectors.pkl"
 IMG_EXTS = {".jpg", ".jpeg", ".png", ".webp"}
 

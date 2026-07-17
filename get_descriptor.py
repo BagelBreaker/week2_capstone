@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import cv2
+
 import numpy as np
 from facenet_models import FacenetModel
 from PIL import Image, UnidentifiedImageError

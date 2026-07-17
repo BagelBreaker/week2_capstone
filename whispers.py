@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 from typing import Dict, Tuple, List
 import random
+from collections import Counter
 
 class Node:
     """ Describes a node in a graph, and the edges connected
@@ -48,7 +49,15 @@ class Node:
 
         self.truth = truth
         self.file_path = file_path
+    
+    def get_neighbors(self):
+        return self.neighbors
+    
+    def set_label(self,label):
+        self.label = label
 
+    def get_label(self):
+        return self.label
 
 def plot_graph(graph, adj):
     """ Use the package networkx to produce a diagrammatic plot of the graph, with
@@ -124,7 +133,7 @@ class Whispers:
     def create_nodes(self):
         for i in range(self.num_nodes):
             self.nodes.append(Node(i,
-                                   np.where(self.adj_mat[i:,] == 1),
+                                   np.where(self.adj_mat[i] == 1)[0],
                                    self.vectors[i],
                                    self.names[i],
                                    ))
@@ -132,6 +141,19 @@ class Whispers:
     def get_adj_mat(self):
         return self.adj_mat
     
+    def get_nodes(self):
+        return self.nodes
+    
     def get_plot(self):
         plot_graph(self.nodes,self.adj_mat)
         plt.show()
+
+    def whispers_step(self):
+        selected_node = random.choice(self.nodes)
+        counts = Counter()
+        neighbors = selected_node.get_neighbors()
+        for neighbor in neighbors:
+            counts[self.nodes[neighbor].get_label()] += 1
+        max_count = max(counts.values())
+        new_label = random.choice([id for id, count in counts.items() if count == max_count])
+        selected_node.set_label(new_label)

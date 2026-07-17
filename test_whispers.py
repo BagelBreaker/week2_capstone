@@ -17,8 +17,10 @@ w = Whispers(vecs,names,threshold)
 if testing_segment == 1:
     w.create_matrix()
     w.create_nodes()
+    nodes = w.get_nodes()
+    w.whispers_step()
     w.get_plot()
-    
+
 elif testing_segment == 2:
     print(cos_dist(vecs[0],vecs[2]))
     print(vecs[0].shape)

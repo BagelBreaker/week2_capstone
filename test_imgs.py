@@ -15,6 +15,7 @@ OUT_DIR = Path("outputs/group_results")
 
 ASK_FEEDBACK = False
 THRESHOLD = 0.65
+SHOW_UNKNOWN_LABELS = True
 
 IMG_EXTS = {".jpg", ".jpeg", ".png", ".webp"}
 
@@ -71,6 +72,7 @@ for img_path in image_paths:
             })
 
             x1, y1, x2, y2 = box
+            show_label = pred != "unknown" or SHOW_UNKNOWN_LABELS
             label = f"Face {i}: {pred}"
 
             rect = patches.Rectangle(
@@ -83,14 +85,15 @@ for img_path in image_paths:
             )
             ax.add_patch(rect)
 
-            ax.text(
-                x1,
-                max(y1 - 6, 10),
-                label,
-                color="red",
-                fontsize=10,
-                bbox={"facecolor": "white", "alpha": 0.7, "edgecolor": "none"},
-            )
+            if show_label:
+                ax.text(
+                    x1,
+                    max(y1 - 6, 10),
+                    label,
+                    color="red",
+                    fontsize=10,
+                    bbox={"facecolor": "white", "alpha": 0.7, "edgecolor": "none"},
+                )
 
     ax.axis("off")
 

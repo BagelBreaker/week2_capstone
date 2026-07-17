@@ -8,8 +8,10 @@ from PIL import Image, ImageDraw
 from get_descriptor import file_descriptors
 from vector_db import VectorDatabase
 
+from feedback import collect_feedback
+
 DB_PATH = "face_vectors.pkl"
-GROUP_DIR = Path("data/group_photos")
+GROUP_DIR = Path("data/group_photos_test")
 OUT_DIR = Path("outputs/group_results")
 IMG_EXTS = {".jpg", ".jpeg", ".png", ".webp"}
 THRESHOLD = 0.65
@@ -47,6 +49,17 @@ for img_path in images:
         result = db.predict(descriptor, threshold=THRESHOLD)
         pred = result["prediction"]
         sim = result["similarity"]
+
+        if pred == "unknown":
+            x1, y1, x2, y2 = map(int, box)
+            face_crop = Image.open(img_path).convert("RGB").crop((x1, y1, x2, y2))
+            face_crop.show()   # opens in your system image viewer
+            print(f"  ^ showing face {k} from {img_path.name}")
+            collect_feedback(pred, descriptor, db)
+            result = db.predict(descriptor, threshold=THRESHOLD)
+            pred = result["prediction"]
+            sim = result["similarity"]
+        
         prob = None if probs is None else float(probs[k])
 
         x1, y1, x2, y2 = map(float, box)

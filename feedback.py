@@ -1,103 +1,51 @@
-celebrities = [
-    "Elon Musk",
-    "Sam A",
-    "Leonardo DiCaprio",
-    "LeBron James",
-    "Chris Rock",
-    "Serena Williams",
-    "Angelina Jolie",
-    "Emma Watson",
-    "Jennifer Lawrence",
-    "Megan Fox"
-]
-
-# Store feedback history
-feedback_history = []
-
-# Store new unknown
-new_profiles = []
-
-def collect_feedback(predicted_person, descriptor_vector, pkl_db, db_path="face_db.pkl"):
+def collect_feedback(prediction, face_vector, db=None, labels=None, metadata=None):
+    labels = labels or (db.labels() if db is not None else [])
+    predicted = prediction["prediction"] if isinstance(prediction, dict) else prediction
 
     print("--------------------------------")
-    print("Facial Recognition")
+    print("Facial Recognition Result")
     print("--------------------------------")
+    print("System prediction:", predicted)
 
-    print("Prediction:", predicted_person)
+    feedback = input("Correct? (yes/no/unknown/skip): ").strip().lower()
 
-    feedback = input(
-        "Is this person correctly predicted? (yes/no/unknown): "
-    )
+    if feedback in ["yes", "y"]:
+        if db is not None and predicted != "unknown":
+            db.add(face_vector, predicted, metadata)
+        return {"action": "confirmed", "person": predicted}
 
-    # Correct prediction
-    if feedback.lower() == "yes":
+    if feedback in ["no", "n"]:
+        if not labels:
+            print("No known labels available.")
+            return {"action": "skipped"}
 
-        profile_update = {
-            "person": predicted_person,
-            "vector_added": descriptor_vector,
-            "confirmed": True
-        }
+        for i, person in enumerate(labels, 1):
+            print(i, "-", person)
 
-        feedback_history.append(profile_update)
-        print(
-            "Confirmed.",
-            predicted_person,
-            "profile updated."
-        )
+        try:
+            choice = int(input("Correct person's number: "))
+            correct = labels[choice - 1]
+        except (ValueError, IndexError):
+            print("Invalid choice.")
+            return {"action": "skipped"}
 
-    # Wrong prediction
+        if db is not None:
+            db.add(face_vector, correct, metadata)
 
-    elif feedback.lower() == "no":
-        print("\nWho is the correct person?")
-        for i, person in enumerate(celebrities):
-            print(i+1, "-", person)
+        print("Updated profile:", correct)
+        return {"action": "corrected", "person": correct, "old_prediction": predicted}
 
-        choice = int(
-            input("Enter correct person's number: ")
-        )
+    if feedback in ["unknown", "u"]:
+        new_name = input("New profile name: ").strip()
 
-        correct_person = celebrities[choice-1]
-        pkl_db.add(descriptor_vector, correct_person)
-        pkl_db.save(db_path)
-        profile_update = {
-            "incorrect_prediction": predicted_person,
-            "actual_person": correct_person,
-            "vector_added": descriptor_vector
-        }
+        if not new_name:
+            print("No name entered.")
+            return {"action": "skipped"}
 
-        feedback_history.append(profile_update)
+        if db is not None:
+            db.add(face_vector, new_name, metadata)
 
-        print(
-            "Updated profile:",
-            correct_person
-        )
+        print("New profile created for:", new_name)
+        return {"action": "new_profile", "person": new_name}
 
-    # Unknown Person
-
-    elif feedback.lower() == "unknown":
-        print("\nCreating a new profile...")
-
-        new_name = input(
-            "Enter person's name: "
-        )
-
-        new_profile = {
-            "name": new_name,
-            "vector": descriptor_vector
-        }
-        pkl_db.add(descriptor_vector, new_name)
-        pkl_db.save(db_path)
-        new_profiles.append(new_profile)
-
-        print(
-            "New profile created for:",
-            new_name
-        )
-
-    else:
-        print("Invalid.")
-
-# collect_feedback(
-#     predicted_name,
-#     descriptor_vector
-# )
+    return {"action": "skipped"}

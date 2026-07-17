@@ -20,13 +20,13 @@ new_profiles = []
 def collect_feedback(predicted_person, face_vector):
 
     print("--------------------------------")
-    print("Facial Recognition Result")
+    print("Facial Recognition")
     print("--------------------------------")
 
-    print("System prediction:", predicted_person)
+    print("Prediction:", predicted_person)
 
     feedback = input(
-        "Is this person correctly identified? (yes/no/unknown): "
+        "Is this person correctly predicted? (yes/no/unknown): "
     )
 
     # Correct prediction
@@ -71,7 +71,7 @@ def collect_feedback(predicted_person, face_vector):
             correct_person
         )
 
-    # Unknown
+    # Unknown Person
 
     elif feedback.lower() == "unknown":
         print("\nCreating a new profile...")
@@ -92,9 +92,8 @@ def collect_feedback(predicted_person, face_vector):
             new_name
         )
 
-
     else:
-        print("Invalid input.")
+        print("Invalid image.")
 
 collect_feedback(
     predicted_name,

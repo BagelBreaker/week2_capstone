@@ -17,16 +17,16 @@ feedback_history = []
 # Store new unknown
 new_profiles = []
 
-def collect_feedback(predicted_person, face_vector):
+def collect_feedback(predicted_person, descriptor_vector, pkl_db, db_path="face_db.pkl"):
 
     print("--------------------------------")
-    print("Facial Recognition Result")
+    print("Facial Recognition")
     print("--------------------------------")
 
-    print("System prediction:", predicted_person)
+    print("Prediction:", predicted_person)
 
     feedback = input(
-        "Is this person correctly identified? (yes/no/unknown): "
+        "Is this person correctly predicted? (yes/no/unknown): "
     )
 
     # Correct prediction
@@ -34,7 +34,7 @@ def collect_feedback(predicted_person, face_vector):
 
         profile_update = {
             "person": predicted_person,
-            "vector_added": face_vector,
+            "vector_added": descriptor_vector,
             "confirmed": True
         }
 
@@ -57,11 +57,12 @@ def collect_feedback(predicted_person, face_vector):
         )
 
         correct_person = celebrities[choice-1]
-
+        pkl_db.add(descriptor_vector, correct_person)
+        pkl_db.save(db_path)
         profile_update = {
             "incorrect_prediction": predicted_person,
             "actual_person": correct_person,
-            "vector_added": face_vector
+            "vector_added": descriptor_vector
         }
 
         feedback_history.append(profile_update)
@@ -71,7 +72,7 @@ def collect_feedback(predicted_person, face_vector):
             correct_person
         )
 
-    # Unknown
+    # Unknown Person
 
     elif feedback.lower() == "unknown":
         print("\nCreating a new profile...")
@@ -82,9 +83,10 @@ def collect_feedback(predicted_person, face_vector):
 
         new_profile = {
             "name": new_name,
-            "vector": face_vector
+            "vector": descriptor_vector
         }
-
+        pkl_db.add(descriptor_vector, new_name)
+        pkl_db.save(db_path)
         new_profiles.append(new_profile)
 
         print(
@@ -92,11 +94,10 @@ def collect_feedback(predicted_person, face_vector):
             new_name
         )
 
-
     else:
-        print("Invalid input.")
+        print("Invalid.")
 
-collect_feedback(
-    predicted_name,
-    example_vector
-)
+# collect_feedback(
+#     predicted_name,
+#     descriptor_vector
+# )

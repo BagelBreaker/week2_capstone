@@ -9,7 +9,7 @@ import matplotlib.patches as patches
 from PIL import Image
 
 
-PKL_PATH = "face_db.pkl"
+PKL_PATH = "face_vectors.pkl"
 GROUP_DIR = Path("data/group_photos")
 OUT_DIR = Path("outputs/group_results")
 

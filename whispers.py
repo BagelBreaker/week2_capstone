@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 from typing import Dict, Tuple, List
 import random
+from collections import Counter
 
 class Node:
     """ Describes a node in a graph, and the edges connected
@@ -48,7 +49,15 @@ class Node:
 
         self.truth = truth
         self.file_path = file_path
+    
+    def get_neighbors(self):
+        return self.neighbors
+    
+    def set_label(self,label):
+        self.label = label
 
+    def get_label(self):
+        return self.label
 
 def plot_graph(graph, adj):
     """ Use the package networkx to produce a diagrammatic plot of the graph, with
@@ -124,7 +133,7 @@ class Whispers:
     def create_nodes(self):
         for i in range(self.num_nodes):
             self.nodes.append(Node(i,
-                                   np.where(self.adj_mat[i:,] == 1),
+                                   np.where(self.adj_mat[i] == 1)[0],
                                    self.vectors[i],
                                    self.names[i],
                                    ))
@@ -132,6 +141,45 @@ class Whispers:
     def get_adj_mat(self):
         return self.adj_mat
     
+    def get_nodes(self):
+        return self.nodes
+    
     def get_plot(self):
         plot_graph(self.nodes,self.adj_mat)
         plt.show()
+
+    def whispers_step(self):
+        selected_node = random.choice(self.nodes)
+        old_label = selected_node.get_label()
+        counts = Counter()
+        neighbors = selected_node.get_neighbors()
+        if len(neighbors) > 0:
+            for neighbor in neighbors:
+                counts[self.nodes[neighbor].get_label()] += 1
+            max_count = max(counts.values())
+            new_label = random.choice([id for id, count in counts.items() if count == max_count])
+            selected_node.set_label(new_label)
+        else:
+            new_label = old_label
+        return old_label, new_label
+
+    def train(self, convergence_threshold=10, stopping_threshold=1000): # only run this once
+        label_counts = Counter()
+        total_labels = len(self.nodes)
+        for node in self.nodes:
+            label_counts[node.get_label()] += 1
+        idle_iterations = 0
+        total_iterations = 0
+        while idle_iterations < convergence_threshold and total_iterations < stopping_threshold:
+            old_label, new_label = self.whispers_step()
+            label_counts[old_label] -= 1
+            label_counts[new_label] += 1
+            if label_counts[old_label] == 0:
+                total_labels -= 1
+                idle_iterations = 0
+            else:
+                idle_iterations += 1
+            total_iterations += 1
+            self.get_plot()
+        
+            

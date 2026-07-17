@@ -17,7 +17,7 @@ feedback_history = []
 # Store new unknown
 new_profiles = []
 
-def collect_feedback(predicted_person, face_vector):
+def collect_feedback(predicted_person, face_vector, pkl_db, db_path="face_db.pkl"):
 
     print("--------------------------------")
     print("Facial Recognition Result")
@@ -57,7 +57,8 @@ def collect_feedback(predicted_person, face_vector):
         )
 
         correct_person = celebrities[choice-1]
-
+        pkl_db.add(face_vector, correct_person)
+        pkl_db.save(db_path)
         profile_update = {
             "incorrect_prediction": predicted_person,
             "actual_person": correct_person,
@@ -84,7 +85,8 @@ def collect_feedback(predicted_person, face_vector):
             "name": new_name,
             "vector": face_vector
         }
-
+        pkl_db.add(face_vector, new_name)
+        pkl_db.save(db_path)
         new_profiles.append(new_profile)
 
         print(
@@ -96,7 +98,7 @@ def collect_feedback(predicted_person, face_vector):
     else:
         print("Invalid input.")
 
-collect_feedback(
-    predicted_name,
-    example_vector
-)
+# collect_feedback(
+#     predicted_name,
+#     example_vector
+# )

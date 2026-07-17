@@ -122,7 +122,7 @@ class Whispers:
 
     def create_matrix(self):
         for i in range(self.num_nodes):
-            for j in range(self.num_nodes - i):
+            for j in range(i+ 1, self.num_nodes):
                 vec_a = self.vectors[i]
                 vec_b = self.vectors[j]
                 if (i != j) and (cos_dist(vec_a, vec_b) <= self.threshold):
@@ -163,7 +163,7 @@ class Whispers:
             new_label = old_label
         return old_label, new_label
 
-    def train(self, convergence_threshold=10, stopping_threshold=1000): # only run this once
+    def train(self, convergence_threshold=10, stopping_threshold=10000): # only run this once
         label_counts = Counter()
         total_labels = len(self.nodes)
         for node in self.nodes:
@@ -179,7 +179,34 @@ class Whispers:
                 idle_iterations = 0
             else:
                 idle_iterations += 1
+            
             total_iterations += 1
-            self.get_plot()
+            print("num labels: ", total_labels)
+            print("old: ", old_label, "new: ", new_label)
+        
+        self.get_plot()
+
+    def whispers_sweep(self):
+        nodes_random = self.nodes.copy()
+        random.shuffle(nodes_random)
+        for selected_node in nodes_random:
+            old_label = selected_node.get_label()
+            counts = Counter()
+            neighbors = selected_node.get_neighbors()
+            if len(neighbors) > 0:
+                for neighbor in neighbors:
+                    counts[self.nodes[neighbor].get_label()] += 1
+                max_count = max(counts.values())
+                new_label = random.choice([id for id, count in counts.items() if count == max_count])
+                selected_node.set_label(new_label)
+            else:
+                new_label = old_label
+
+    def train_sweeps(self, max_sweeps=1000):
+        for sweep in range(max_sweeps):
+            self.whispers_sweep()
+        
+            
+
         
             
